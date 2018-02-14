@@ -53,6 +53,10 @@ def _django_db_setup(request,
         db_cfg = setup_databases(verbosity=pytest.config.option.verbose,
                                  interactive=False)
 
+        # clear pre-setup connections
+        for db in db_cfg[0]:
+            db[0].connection = None
+
     def teardown_database():
         with _django_cursor_wrapper:
             teardown_databases(db_cfg)
