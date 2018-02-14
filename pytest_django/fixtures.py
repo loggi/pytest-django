@@ -53,16 +53,24 @@ def _django_db_setup(request,
         db_cfg = setup_databases(verbosity=pytest.config.option.verbose,
                                  interactive=False)
 
-        # clear pre-setup connections
-        for db in db_cfg[0]:
-            db[0].connection = None
+        _close_existing_connections(db_cfg)
 
     def teardown_database():
         with _django_cursor_wrapper:
+            _close_existing_connections(db_cfg)
             teardown_databases(db_cfg)
 
     if not request.config.getvalue('reuse_db'):
         request.addfinalizer(teardown_database)
+
+
+def _close_existing_connections(db_cfg):
+    # clear pre-setup connections
+    for db in db_cfg[0]:
+        if not db[0].connection:
+            continue
+        db[0].connection.close()
+        db[0].connection = None
 
 
 def _django_db_fixture_helper(transactional, request, _django_cursor_wrapper):
