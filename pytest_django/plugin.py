@@ -366,17 +366,17 @@ def _django_db_marker(request):
     if marker:
         validate_django_db(marker)
         if marker.transaction:
-            request.getfuncargvalue('transactional_db')
+            request.getfixturevalue('transactional_db')
         else:
-            request.getfuncargvalue('db')
+            request.getfixturevalue('db')
 
 
 @pytest.fixture(autouse=True, scope='class')
 def _django_setup_unittest(request, _django_cursor_wrapper):
     """Setup a django unittest, internal to pytest-django."""
     if django_settings_is_configured() and is_django_unittest(request):
-        request.getfuncargvalue('_django_test_environment')
-        request.getfuncargvalue('_django_db_setup')
+        request.getfixturevalue('_django_test_environment')
+        request.getfixturevalue('_django_db_setup')
 
         _django_cursor_wrapper.enable()
 

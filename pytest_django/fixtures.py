@@ -177,7 +177,7 @@ def db(request, _django_db_setup, _django_cursor_wrapper):
     """
     if 'transactional_db' in request.funcargnames \
             or 'live_server' in request.funcargnames:
-        return request.getfuncargvalue('transactional_db')
+        return request.getfixturevalue('transactional_db')
     return _django_db_fixture_helper(False, request, _django_cursor_wrapper)
 
 
@@ -349,4 +349,4 @@ def _live_server_helper(request):
     function-scoped.
     """
     if 'live_server' in request.funcargnames:
-        request.getfuncargvalue('transactional_db')
+        request.getfixturevalue('transactional_db')
